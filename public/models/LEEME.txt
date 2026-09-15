@@ -1,0 +1,2 @@
+Poné acá los modelos .glb de los platos (por ejemplo burger.glb).
+En src/data/fuego-lento.ts se referencian como model3d: { glb: "/models/burger.glb" }.

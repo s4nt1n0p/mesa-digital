@@ -3,17 +3,20 @@
 import dynamic from "next/dynamic";
 import type { Dish } from "@/lib/types";
 
-// El visor 3D se carga solo en el cliente y solo en las fichas que lo usan,
+// Los visores 3D se cargan solo en el cliente y solo en las fichas que los usan,
 // para no cargar Three.js en el resto del menú.
+const loading = () => (
+  <div className="aspect-square w-full animate-pulse rounded-2xl bg-surface" />
+);
+
 const BurgerExploded = dynamic(() => import("./BurgerExploded"), {
   ssr: false,
-  loading: () => (
-    <div className="aspect-square w-full animate-pulse rounded-2xl bg-surface" />
-  ),
+  loading,
 });
+
+const GlbViewer = dynamic(() => import("./GlbViewer"), { ssr: false, loading });
 
 export function Dish3D({ model }: { model: NonNullable<Dish["model3d"]> }) {
   if (model === "burger-explode") return <BurgerExploded />;
-  // Modelos .glb reales: se integran con <model-viewer> en la etapa 2.
-  return null;
+  return <GlbViewer url={model.glb} />;
 }

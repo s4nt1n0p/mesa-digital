@@ -283,8 +283,11 @@ export default function BurgerExploded() {
           far={3}
         />
         <OrbitControls
-          enableZoom={false}
           enablePan={false}
+          enableZoom
+          zoomSpeed={0.8}
+          minDistance={2.8}
+          maxDistance={8}
           minPolarAngle={Math.PI / 3.2}
           maxPolarAngle={Math.PI / 1.9}
         />
@@ -299,7 +302,7 @@ export default function BurgerExploded() {
         {exploded ? "Armar" : "Ver por dentro"}
       </button>
       <span className="pointer-events-none absolute right-3 top-3 rounded-full bg-ink/70 px-2 py-1 text-[10px] font-semibold tracking-wider text-accent backdrop-blur">
-        3D · girá con el dedo
+        3D · girá y hacé zoom
       </span>
     </div>
   );
