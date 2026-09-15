@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { DietTag, Menu } from "@/lib/types";
 import { DIET_TAGS, FILTERABLE_TAGS } from "@/lib/menu";
 import { DishCard } from "./DishCard";
+import { Reveal } from "./Reveal";
 
 type Props = {
   menu: Menu;
@@ -199,10 +200,12 @@ export function MenuView({ menu, table }: Props) {
               ? "Sin resultados"
               : `${visible.length} ${visible.length === 1 ? "plato" : "platos"}`}
           </p>
-          <ul className="divide-y divide-line">
-            {visible.map((d) => (
+          <ul className="mt-3 grid grid-cols-2 gap-3">
+            {visible.map((d, i) => (
               <li key={d.id}>
-                <DishCard dish={d} href={dishHref(d.id)} />
+                <Reveal delay={(i % 2) * 60} className="h-full">
+                  <DishCard dish={d} href={dishHref(d.id)} />
+                </Reveal>
               </li>
             ))}
           </ul>
@@ -239,11 +242,16 @@ export function MenuView({ menu, table }: Props) {
                 }}
                 className="px-5 pt-8"
               >
-                <h2 className="font-display text-2xl text-cream">{c.name}</h2>
-                <ul className="mt-1 divide-y divide-line">
-                  {items.map((d) => (
+                <div className="flex items-baseline justify-between">
+                  <h2 className="font-display text-2xl text-cream">{c.name}</h2>
+                  <span className="text-xs text-muted">{items.length}</span>
+                </div>
+                <ul className="mt-3 grid grid-cols-2 gap-3">
+                  {items.map((d, i) => (
                     <li key={d.id}>
-                      <DishCard dish={d} href={dishHref(d.id)} />
+                      <Reveal delay={(i % 2) * 60} className="h-full">
+                        <DishCard dish={d} href={dishHref(d.id)} />
+                      </Reveal>
                     </li>
                   ))}
                 </ul>
