@@ -13,12 +13,20 @@ export default function Home() {
         Sin app para descargar, sin hardware, sin comisión por pedido. El cliente
         escanea el QR y pide.
       </p>
-      <Link
-        href="/menu/fuego-lento?mesa=5"
-        className="mt-8 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-ink"
-      >
-        Ver demo · Fuego Lento, mesa 5
-      </Link>
+      <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+        <Link
+          href="/menu/fuego-lento?mesa=5"
+          className="rounded-full bg-accent px-6 py-3 text-sm font-semibold text-ink"
+        >
+          Ver la carta · mesa 5
+        </Link>
+        <Link
+          href="/panel"
+          className="rounded-full border border-line px-6 py-3 text-sm font-semibold text-cream"
+        >
+          Panel del local
+        </Link>
+      </div>
     </main>
   );
 }
