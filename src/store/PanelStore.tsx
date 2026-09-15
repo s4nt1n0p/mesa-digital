@@ -165,8 +165,14 @@ export function PanelProvider({ menu, children }: { menu: Menu; children: React.
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
-        const saved = JSON.parse(raw) as Partial<State>;
-        dispatch({ type: "hydrate", state: { ...saved, menu: menu, unseen: [] } });
+        const saved = JSON.parse(raw) as Partial<State> & { dishes?: Dish[] };
+        // Los cambios de carta (agotados, precios) se guardan por id y se
+        // aplican sobre el menú del código, así una carta nueva no se pisa.
+        const byId = new Map((saved.dishes ?? []).map((d) => [d.id, d]));
+        const dishes = menu.dishes.map((d) => ({ ...d, ...(byId.get(d.id) ?? {}) }));
+        const { dishes: _saved, ...rest } = saved;
+        void _saved;
+        dispatch({ type: "hydrate", state: { ...rest, menu: { ...menu, dishes }, unseen: [] } });
       }
     } catch {}
   }, [menu]);
@@ -174,7 +180,10 @@ export function PanelProvider({ menu, children }: { menu: Menu; children: React.
   useEffect(() => {
     try {
       const { tables, orders, closed, demo } = state;
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ tables, orders, closed, demo }));
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({ tables, orders, closed, demo, dishes: state.menu.dishes }),
+      );
     } catch {}
   }, [state]);
 
@@ -219,9 +228,10 @@ export function PanelProvider({ menu, children }: { menu: Menu; children: React.
     return () => clearTimeout(t);
   }, [state.demo, simulateOrder]);
 
-  const value = useMemo<Ctx>(
+  // Las acciones no cambian nunca: así los componentes memorizados no se
+  // vuelven a renderizar con cada pedido que entra.
+  const actions = useMemo<Omit<Ctx, keyof State>>(
     () => ({
-      ...state,
       addOrder: (table, items) => {
         const now = Date.now();
         dispatch({
@@ -243,8 +253,10 @@ export function PanelProvider({ menu, children }: { menu: Menu; children: React.
       toggleDemo: () => dispatch({ type: "demo/toggle" }),
       simulateOrder,
     }),
-    [state, simulateOrder],
+    [simulateOrder],
   );
+
+  const value = useMemo<Ctx>(() => ({ ...state, ...actions }), [state, actions]);
 
   return <PanelCtx.Provider value={value}>{children}</PanelCtx.Provider>;
 }

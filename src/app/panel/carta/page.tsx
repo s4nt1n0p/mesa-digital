@@ -1,9 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { memo, useCallback, useState } from "react";
 import { usePanel } from "@/store/PanelStore";
 import { DIET_TAGS, formatPrice } from "@/lib/menu";
+import { thumb } from "@/lib/images";
 import type { DietTag, Dish } from "@/lib/types";
 import { PageTitle } from "@/components/panel/ui";
 
@@ -38,7 +39,7 @@ function DishEditor({ dish, onClose }: { dish: Dish; onClose: () => void }) {
       >
         <div className="flex items-center gap-3">
           <div className="relative size-16 shrink-0 overflow-hidden rounded-lg bg-surface-2">
-            <Image src={draft.image} alt="" fill sizes="64px" className="object-cover" />
+            <Image src={thumb(draft.image, 128)} alt="" fill sizes="64px" unoptimized className="object-cover" />
           </div>
           <div className="min-w-0 flex-1">
             <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-muted">Editar plato</p>
@@ -160,10 +161,63 @@ function DishEditor({ dish, onClose }: { dish: Dish; onClose: () => void }) {
   );
 }
 
+
+const DishRow = memo(function DishRow({
+  dish: d,
+  onEdit,
+  onToggle,
+}: {
+  dish: Dish;
+  onEdit: (d: Dish) => void;
+  onToggle: (id: string, available: boolean) => void;
+}) {
+  return (
+    <li className={`flex items-center gap-3 px-3 py-2.5 ${d.available ? "" : "opacity-60"}`}>
+      <button
+        type="button"
+        onClick={() => onEdit(d)}
+        className="flex min-w-0 flex-1 items-center gap-3 text-left"
+      >
+        <div className="relative size-12 shrink-0 overflow-hidden rounded-lg bg-surface-2">
+          <Image src={thumb(d.image)} alt="" fill sizes="48px" unoptimized className="object-cover" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm font-semibold text-cream">{d.name}</p>
+          <p className="text-xs tabular-nums text-muted">
+            {formatPrice(d.price)}
+            {d.tags.length > 0 && ` · ${d.tags.map((t) => DIET_TAGS[t].short).join(" ")}`}
+            {d.model3d && " · 3D"}
+          </p>
+        </div>
+      </button>
+      <button
+        type="button"
+        role="switch"
+        aria-checked={d.available}
+        aria-label={d.available ? "Marcar agotado" : "Marcar disponible"}
+        onClick={() => onToggle(d.id, !d.available)}
+        className={`relative block h-7 w-12 shrink-0 rounded-full transition-colors ${
+          d.available ? "bg-sage" : "bg-line"
+        }`}
+      >
+        <span
+          className={`absolute left-0 top-1 size-5 rounded-full bg-cream shadow transition-transform ${
+            d.available ? "translate-x-6" : "translate-x-1"
+          }`}
+        />
+      </button>
+    </li>
+  );
+});
+
 export default function CartaPage() {
   const { menu, updateDish } = usePanel();
   const [editing, setEditing] = useState<Dish | null>(null);
   const [q, setQ] = useState("");
+  const toggle = useCallback(
+    (id: string, available: boolean) => updateDish(id, { available }),
+    [updateDish],
+  );
   const soldOut = menu.dishes.filter((d) => !d.available).length;
   const norm = (s: string) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
 
@@ -197,41 +251,7 @@ export default function CartaPage() {
               </h2>
               <ul className="divide-y divide-line rounded-xl border border-line bg-surface">
                 {items.map((d) => (
-                  <li key={d.id} className={`flex items-center gap-3 px-3 py-2.5 ${d.available ? "" : "opacity-60"}`}>
-                    <button
-                      type="button"
-                      onClick={() => setEditing(d)}
-                      className="flex min-w-0 flex-1 items-center gap-3 text-left"
-                    >
-                      <div className="relative size-12 shrink-0 overflow-hidden rounded-lg bg-surface-2">
-                        <Image src={d.image} alt="" fill sizes="48px" className="object-cover" />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-semibold text-cream">{d.name}</p>
-                        <p className="text-xs tabular-nums text-muted">
-                          {formatPrice(d.price)}
-                          {d.tags.length > 0 && ` · ${d.tags.map((t) => DIET_TAGS[t].short).join(" ")}`}
-                          {d.model3d && " · 3D"}
-                        </p>
-                      </div>
-                    </button>
-                    <button
-                      type="button"
-                      role="switch"
-                      aria-checked={d.available}
-                      aria-label={d.available ? "Marcar agotado" : "Marcar disponible"}
-                      onClick={() => updateDish(d.id, { available: !d.available })}
-                      className={`relative h-7 w-12 shrink-0 rounded-full transition-colors ${
-                        d.available ? "bg-sage" : "bg-line"
-                      }`}
-                    >
-                      <span
-                        className={`absolute top-1 size-5 rounded-full bg-cream transition-transform ${
-                          d.available ? "translate-x-6" : "translate-x-1"
-                        }`}
-                      />
-                    </button>
-                  </li>
+                  <DishRow key={d.id} dish={d} onEdit={setEditing} onToggle={toggle} />
                 ))}
               </ul>
             </section>
