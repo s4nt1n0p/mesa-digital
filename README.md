@@ -27,5 +27,5 @@ Abre `http://localhost:3000`.
 ```
 src/
 ├── app/        Rutas y páginas
-└── data/       Datos de demo (carta de León Bar Bistró) hasta conectar Supabase
+└── data/       Datos de demo hasta conectar Supabase
 ```
