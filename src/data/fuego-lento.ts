@@ -127,6 +127,7 @@ export const fuegoLento: Menu = {
       id: "costillar",
       categoryId: "parrilla",
       name: "Costillar de cerdo BBQ",
+      label: "recomendado",
       description:
         "Costillar cocido lento seis horas, laqueado con salsa barbacoa de la casa. Con pickles y tomate.",
       price: 29800,
@@ -224,6 +225,7 @@ export const fuegoLento: Menu = {
       id: "risotto-hongos",
       categoryId: "pastas",
       name: "Risotto de hongos",
+      label: "nuevo",
       description:
         "Arroz carnaroli, hongos de pino y portobello, manteca y parmesano.",
       price: 21000,
@@ -263,7 +265,8 @@ export const fuegoLento: Menu = {
     {
       id: "burger-veggie",
       categoryId: "burgers",
-      name: "Veggie de garbanzos",
+      name: "Veggie de garbanzos y remolacha con palta",
+      label: "nuevo",
       description:
         "Medallón de garbanzos y remolacha, palta, tomate y mayonesa vegana. Pan integral.",
       price: 17900,

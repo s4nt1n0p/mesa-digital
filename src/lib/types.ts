@@ -40,6 +40,8 @@ export type Dish = {
   available: boolean;
   /** Los más pedidos aparecen en la sección de recomendados. */
   featured?: boolean;
+  /** Etiqueta visible en la tarjeta, la elige el dueño. */
+  label?: "nuevo" | "recomendado";
   /** Modelo 3D. "burger-explode" es el modelo procedural de demo; después, un .glb. */
   model3d?: "burger-explode" | { glb: string };
 };
