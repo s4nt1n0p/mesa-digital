@@ -113,6 +113,11 @@ export default function ResumenPage() {
               <h2 className="text-sm font-semibold text-cream">Mesas activas</h2>
               <span className="text-xs text-muted">{occupied.length} de {tables.length}</span>
             </div>
+            <div className="mt-2 flex gap-3 text-[11px] text-muted">
+              <span><span className="mr-1 inline-block size-2 rounded-full bg-sage" />Ocupada</span>
+              <span><span className="mr-1 inline-block size-2 rounded-full bg-chili" />Libre</span>
+              <span><span className="mr-1 inline-block size-2 rounded-full bg-accent" />Pide cuenta</span>
+            </div>
             <div className="mt-3 flex flex-wrap gap-1.5">
               {tables.map((t) => (
                 <span
@@ -120,10 +125,10 @@ export default function ResumenPage() {
                   title={`Mesa ${t.number}`}
                   className={`flex size-8 items-center justify-center rounded-md text-xs font-semibold ${
                     t.status === "libre"
-                      ? "bg-surface-2 text-muted"
+                      ? "bg-chili/20 text-chili"
                       : t.status === "cuenta"
                         ? "bg-accent text-ink"
-                        : "bg-cream/15 text-cream"
+                        : "bg-sage/25 text-sage"
                   }`}
                 >
                   {t.number}

@@ -7,8 +7,8 @@ import { orderTotal, type Table } from "@/lib/orders";
 import { PageTitle, StatusPill, useNow } from "@/components/panel/ui";
 
 const TONE: Record<Table["status"], string> = {
-  libre: "border-line bg-surface text-muted",
-  ocupada: "border-cream/30 bg-cream/10 text-cream",
+  libre: "border-chili/50 bg-chili/15 text-chili",
+  ocupada: "border-sage/60 bg-sage/15 text-sage",
   cuenta: "border-accent bg-accent/15 text-accent",
 };
 
